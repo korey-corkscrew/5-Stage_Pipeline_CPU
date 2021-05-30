@@ -1,4 +1,4 @@
-// CAMERON BINIAMOW & GOPAL BOHORA
+// CAMERON BINIAMOW
 // ECEN 3100
 // LAB 9: DATA FORWARDING
 // DUE: 11/12/2020
@@ -13,7 +13,7 @@
 
 `timescale 1ns / 1ps
 
-module Lab9(
+module src(
 input clk,
 output [31:0] PC,
 output [31:0] Instruction_IFID,
@@ -28,21 +28,21 @@ output [4:0] Rd_EXMEM,
 output [8:0] Controls_EXMEM
     );
     
-	reg [31:0] imem [31:0];
-	 
-	//*********************INSTRUCTIIONS**********************//
-	//********************************************************//
-	
+reg [31:0] imem [31:0];
+
+	//*********************INSTRUCTIIONS*******************//
+	//*****************************************************//
+
 	initial 
 	begin
-		imem[0] = 32'h00220000;				// R0 = R1 & R2
-		imem[1] = 32'h00030002;				// R0 = R0 + R3
-		imem[2] = 32'h00030002;				// R0 = R0 + R3
-		imem[3] = 32'h00030002;				// R0 = R0 + R3
-		imem[4] = 32'h00640002;				// R0 = R3 - R4
+		imem[0] = 32'h00220000;		// R0 = R1 & R2
+		imem[1] = 32'h00030002;		// R0 = R0 + R3
+		imem[2] = 32'h00030002;		// R0 = R0 + R3
+		imem[3] = 32'h00030002;		// R0 = R0 + R3
+		imem[4] = 32'h00640002;		// R0 = R3 - R4
 	end
-	
-	//********************************************************//
+
+	//*****************************************************//
 	 
 	 
 /*=============================================================*/
@@ -55,8 +55,8 @@ output [8:0] Controls_EXMEM
 	reg [31:0] instruction_IFID;
 
     
-	//*********************IF/ID PIPELINE*********************//
-	//********************************************************//
+	//*********************IF/ID PIPELINE******************//
+	//*****************************************************//
 	
 	always @(negedge clk) 
 	begin
@@ -64,16 +64,16 @@ output [8:0] Controls_EXMEM
 		instruction_IFID <= imem[(PC_reg/4)];	// LOAD INSTRUCTION FROM MEM
 	end
 	
-	//********************************************************//
+	//*****************************************************//
 
 	
-	//*********************OUTPUTS****************************//
-	//********************************************************//
+	//*********************OUTPUTS*************************//
+	//*****************************************************//
 	
-	assign PC = PC_reg;					// OUTPUT PROGRAM COUNTER
+	assign PC = PC_reg;				// OUTPUT PROGRAM COUNTER
 	assign Instruction_IFID = instruction_IFID;	// OUTPUT INSTRUCTION
 	
-	//********************************************************//
+	//*****************************************************//
 	
 	
 /*=============================================================*/
@@ -91,10 +91,10 @@ output [8:0] Controls_EXMEM
 	wire [5:0] opcode_ID, function_ID;
 
 
-	//*********************REGISTER FILE**********************//
-	//********************************************************//
+	//*********************REGISTER FILE*******************//
+	//*****************************************************//
 	
-	initial 													// INITIAL REGISTER FILE VALUES
+	initial 					// INITIAL REGISTER FILE VALUES
 	begin
 		RF[0] = 32'h00000000;
 		RF[1] = 32'h00000000;
@@ -104,11 +104,11 @@ output [8:0] Controls_EXMEM
 		RF[5] = 32'h00000005;
 	end
 	
-	//********************************************************//
+	//*****************************************************//
 	
 	
-	//*********************DECODE INSTRUCTION*****************//
-	//********************************************************//
+	//*********************DECODE INSTRUCTION**************//
+	//*****************************************************//
 	 
 	assign rs_ID = instruction_IFID[25:21];		
 	assign rt_ID = instruction_IFID[20:16];
@@ -117,24 +117,24 @@ output [8:0] Controls_EXMEM
 	assign read1 = rs_ID;				// Rs ADDRESS
 	assign read2 = rt_ID;				// Rt ADDRESS
 	
-	//********************************************************//
+	//*****************************************************//
 	
 	
-	//*********************REG FILE DATA**********************//
-	//********************************************************//
+	//*********************REG FILE DATA*******************//
+	//*****************************************************//
 	
 	always @(posedge clk) 
 	begin
-		Data1 <= RF[read1];				// Rs DATA
-		Data2 <= RF[read2];				// Rt DATA
+		Data1 <= RF[read1];			// Rs DATA
+		Data2 <= RF[read2];			// Rt DATA
 		RF[rd_MEMWB] <= DataMemRead_WB;		// WRITEBACK DATA 
-    end
+    	end
 	 
-	//********************************************************//
+	//*****************************************************//
          
 	
-	//*********************CONTROL LINES**********************//
-	//********************************************************//
+	//*********************CONTROL LINES*******************//
+	//*****************************************************//
 	
 	parameter Rformat = 6'b000000, LW = 6'b100011, SW = 6'b101011, BEQ = 6'b000100;
 	
@@ -151,10 +151,10 @@ output [8:0] Controls_EXMEM
 		endcase
 	end
 	
-	//********************************************************//
+	//*****************************************************//
 	
 		
-	//*********************ID/EX PIPELINE*********************//
+	//*********************ID/EX PIPELINE******************//
 	
 	always @(negedge clk) 
 	begin
@@ -168,11 +168,11 @@ output [8:0] Controls_EXMEM
 		instruction_IDEX <= instruction_IFID;
 	end
 	
-	//********************************************************//
+	//*****************************************************//
 
 	
-	//*********************OUTPUTS****************************//
-	//********************************************************//	
+	//*********************OUTPUTS*************************//
+	//*****************************************************//	
 	
 	assign Rs_IDEX = rs_IDEX;
 	assign Rt_IDEX = rt_IDEX;
@@ -181,7 +181,7 @@ output [8:0] Controls_EXMEM
 	assign DATA2_IDEX = Data2_IDEX;
 	assign Control_IDEX = ControlLines_IDEX;
 	
-	//********************************************************//
+	//*****************************************************//
 
 	
 	
@@ -201,12 +201,12 @@ output [8:0] Controls_EXMEM
 	parameter Add = 6'b000010, Sub = 6'b000100, And = 6'b000000, Or = 6'b000001;
 	 
 
-	//*********************DESTINATION REGISTER (EX)**********//
-	//********************************************************//
+	//*********************DESTINATION REGISTER (EX)*******//
+	//*****************************************************//
 
 	always @(posedge clk)
 	begin
-		if (ControlLines_IDEX[8])			// IF RegDst
+		if (ControlLines_IDEX[8])		// IF RegDst
 		begin
 			rd_EX <= rd_IDEX;
 		end
@@ -216,79 +216,74 @@ output [8:0] Controls_EXMEM
 		end
 	end
 	
-	//********************************************************//
+	//*****************************************************//
 	
 	
-	//*********************FORWARDING UNIT********************//
-	//********************************************************//	
+	//*********************FORWARDING UNIT*****************//
+	//*****************************************************//	
 
-	always @(posedge clk)															// FORWARD A
+	always @(posedge clk)						// FORWARD A
 	begin
-		if ((ControlLines_EXMEM[5]) && (rd_EXMEM == rs_IDEX))	
-// IF EX RegWrite & DEST/SOURCE REGS ARE SAME
+		if ((ControlLines_EXMEM[5]) && (rd_EXMEM == rs_IDEX))	// IF EX RegWrite & DEST/SOURCE REGS ARE SAME
 		begin
-			ForwardA <= 2'b10;														// SELECT ALURESULT
+			ForwardA <= 2'b10;				// SELECT ALURESULT
 		end
-		else if ((ControlLines_MEMWB[5]) && (rd_MEMWB == rs_IDEX))	
-// IF MEM RegWrite & DEST/SOURCE REGS ARE SAME
+		else if ((ControlLines_MEMWB[5]) && (rd_MEMWB == rs_IDEX))// IF MEM RegWrite & DEST/SOURCE REGS ARE SAME
 		begin
-			ForwardA <= 2'b01;														// SELECT WRITE BACK DATA
+			ForwardA <= 2'b01;				// SELECT WRITE BACK DATA
 		end
 		else
 		begin
-			ForwardA <= 2'b00;														// OTHERWISE USE DATA1 FROM REG FILE
+			ForwardA <= 2'b00;				// OTHERWISE USE DATA1 FROM REG FILE
 		end
 	end
 	
-	always @(posedge clk)															// FORWARD B
+	always @(posedge clk)						// FORWARD B
 	begin
-		if ((ControlLines_EXMEM[5]) && (rd_EXMEM == rt_IDEX))	
-// IF EX RegWrite & DEST/TARG REGS ARE SAME
+		if ((ControlLines_EXMEM[5]) && (rd_EXMEM == rt_IDEX))	// IF EX RegWrite & DEST/TARG REGS ARE SAME
 		begin
-			ForwardB <= 2'b10;														// SELECT ALURESULT
+			ForwardB <= 2'b10;				// SELECT ALURESULT
 		end
-		else if ((ControlLines_MEMWB[5]) && (rd_MEMWB == rt_IDEX))	
-// IF MEM RegWrite & DEST/TARG REGS ARE SAME
+		else if ((ControlLines_MEMWB[5]) && (rd_MEMWB == rt_IDEX))// IF MEM RegWrite & DEST/TARG REGS ARE SAME
 		begin
-			ForwardB <= 2'b01;														// SELECT WRITE BACK DATA
+			ForwardB <= 2'b01;				// SELECT WRITE BACK DATA
 		end
 		else
 		begin
-			ForwardB <= 2'b00;														// OTHERWISE USE DATA1 FROM REG FILE
+			ForwardB <= 2'b00;				// OTHERWISE USE DATA1 FROM REG FILE
 		end
 	end
 			
-	
-// ASSIGN VALUE TO INPUT 'A' OF ALU
+	// ASSIGN VALUE TO INPUT 'A' OF ALU
 	assign A = (ForwardA == 2'b01) ? DataMemRead_WB :	
 					(ForwardA == 2'b10) ? ALUResult_EXMEM :
 					Data1_IDEX;
 					
-// ASSIGN VALUE TO INPUT 'B' OF ALU
+	// ASSIGN VALUE TO INPUT 'B' OF ALU
 	assign B = (ForwardB == 2'b01) ? DataMemRead_WB :			
 					(ForwardB == 2'b10) ? ALUResult_EXMEM :
 					Data2_IDEX;
 
-	//********************************************************//
+	//*****************************************************//
 					
 				
-	//*********************ALU********************************//
-	//********************************************************//
+	//*********************ALU*****************************//
+	//*****************************************************//
 	 
-	assign ALUCtrlWire = (ControlLines_IDEX[1:0] == 2'b00) ? Add :  	// LW OR SW      
-                      (ControlLines_IDEX[1:0] == 2'b01) ? Sub : 		// BEQ
-                      Function_IDEX;						// R FORMAT
+	assign ALUCtrlWire = (ControlLines_IDEX[1:0] == 2'b00) ? Add :  // LW OR SW      
+                      	(ControlLines_IDEX[1:0] == 2'b01) ? Sub : 	// BEQ
+                      	Function_IDEX;					// R FORMAT
     
-    assign ALUResult_EX = (ALUCtrlWire == 0) ? A & B:
-                        (ALUCtrlWire == 1) ? A | B:
+    	assign ALUResult_EX = (ALUCtrlWire == 0) ? A & B:
+        		(ALUCtrlWire == 1) ? A | B:
                         (ALUCtrlWire == 2) ? A + B:
                         (ALUCtrlWire == 4) ? A - B:
-                        0; 					//DEFAULT VALUE
-	//********************************************************//
+                        0; 						//DEFAULT VALUE
+	//*****************************************************//
 								
 								
-	//*********************EX/MEM PIPELINE********************//
-	//********************************************************//
+	//*********************EX/MEM PIPELINE*****************//
+	//*****************************************************//
 
 	always @(negedge clk)
 	begin
@@ -300,17 +295,17 @@ output [8:0] Controls_EXMEM
 
 	end
 	
-	//********************************************************//
+	//*****************************************************//
 	
 
-	//*********************OUTPUTS****************************//
-	//********************************************************//
+	//*********************OUTPUTS*************************//
+	//*****************************************************//
 	
 	assign ALURESULT_EXMEM = ALUResult_EXMEM;
 	assign Rd_EXMEM = rd_EXMEM;
 	assign Controls_EXMEM = ControlLines_EXMEM;
 	
-	//********************************************************//
+	//*****************************************************//
 	
 	
 	
@@ -326,12 +321,12 @@ output [8:0] Controls_EXMEM
 	reg [31:0] dmem [31:0];
 	
 	
-	//*********************DATA MEMORY************************//
-	//********************************************************//
+	//*********************DATA MEMORY*********************//
+	//*****************************************************//
 	
 	always @(posedge clk)
 	begin
-		if (ControlLines_EXMEM[4])				// IF MemRead
+		if (ControlLines_EXMEM[4])			// IF MemRead
 		begin
 			DataMemRead_MEM <= dmem[ALUResult_EXMEM];// LOAD DATA FROM MEMORY
 		end
@@ -341,11 +336,11 @@ output [8:0] Controls_EXMEM
 		end
 	end
 	
-	//********************************************************//
+	//*****************************************************//
 
 	
-	//*********************MEM/WB PIPELINE********************//
-	//********************************************************//
+	//*********************MEM/WB PIPELINE*****************//
+	//*****************************************************//
 
 	always @(negedge clk)
 	begin
@@ -356,7 +351,7 @@ output [8:0] Controls_EXMEM
 		instruction_MEMWB <= instruction_EXMEM;
 	end
 	
-	//********************************************************//
+	//*****************************************************//
 
 
 /*=============================================================*/
@@ -368,37 +363,10 @@ output [8:0] Controls_EXMEM
 	wire [31:0] DataMemRead_WB;
 	
 
-	//*********************WRITEBACK DATA*********************//
-	//********************************************************//
+	//*********************WRITEBACK DATA******************//
+	//*****************************************************//
 	
 	assign DataMemRead_WB = (ControlLines_MEMWB[6] == 1) ? ALUResult_MEMWB : 
-DataMemRead_MEMWB;
-	//********************************************************//
+				DataMemRead_MEMWB;
+	//*****************************************************//
 endmodule
-Figure II: Lab 9 Test Bench
-module Lab9_tb;
-	reg CLK;
-	wire [31:0] PC;
-	wire [31:0] Instruction;
-	wire [31:0] ALUResult;
-	
-	Lab9 uut(
-		.CLK(clk),
-		.PC(PC_Reg),
-		.Instruction(Instruction_IFID),
-		.ALUResult(ALURESULT_EXMEM)
-		);
-		
-		initial begin
-			CLK = 0;
-			#10;
-			#400;
-			$finish;
-		end
-		always
-		begin
-			#10;
-			CLK = ~CLK;
-		end
-		
-endmodule	
